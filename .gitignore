@@ -1,0 +1,19 @@
+# Python virtual environments
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+
+# Environment variables and secrets
+.env
+*.pem
+*.key
+
+# VS Code specific
+.vscode/
+.history/
+
+# OS specific
+.DS_Store
+Thumbs.db
