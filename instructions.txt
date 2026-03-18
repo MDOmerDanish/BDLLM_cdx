@@ -1,0 +1,13 @@
+# Codex Prompt Log
+
+## March 18, 2026
+
+Create a new file named instructions.txt in the root directory of this workspace. Add a header titled 'Codex Prompt Log'. Record this exact prompt as the first entry with today's date. Keep this file open in your context, as I will ask you to log all future prompts here.
+
+Create a bash script named setup_fabric.sh inside the blockchain directory. Write the shell commands required to download the official Hyperledger Fabric install-fabric.sh script. Add the commands to run it to fetch the docker images, binaries, and the fabric-samples repository. Finally, include the commands to navigate into fabric-samples/test-network and execute ./network.sh up createChannel -c bdllmchannel -ca. Add brief comments explaining each step and log this prompt in instructions.txt.
+
+Create a Python script named manager.py in the root directory. Implement an interactive command-line while loop displaying a main menu with 5 options: 1) Set up and Run Hyperledger Fabric Blockchain, 2) LLM Server Registration, 3) LLM User Registration, 4) View system servers and users, and 5) Run Service.
+For Option 1, write a function that automatically checks if the blockchain/fabric-samples directory exists and uses the subprocess module to verify if Fabric Docker containers are running. If the directory is missing or containers are offline, execute blockchain/setup_fabric.sh in the background without asking for user permission. If the network is already active, print a confirmation message.
+For Options 2, 3, and 4, implement placeholder functions that print 'Not implemented yet will be ready soon.'
+For Option 5, write logic that first prompts the user to input a 'Server ID' and a 'User ID'. After the user submits both strings, print 'Not implemented yet will be ready soon.'
+Log this exact prompt as a new entry in instructions.txt.

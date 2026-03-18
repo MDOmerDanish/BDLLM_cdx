@@ -1,0 +1,16 @@
+# Blockchain & Smart Contracts
+web3==6.15.1
+eth-account==0.11.0
+
+# Backend API
+fastapi==0.110.0
+uvicorn==0.27.1
+pydantic==2.6.3
+
+# AI & LLM Integration
+google-generativeai
+python-dotenv
+
+# Utils
+requests
+cryptography
