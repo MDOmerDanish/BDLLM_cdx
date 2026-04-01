@@ -54,3 +54,73 @@ Part 2: Update `manager.py`
 
 Part 3: Logging
 Append this exact prompt text as a new entry in the `instructions.txt` file with today's date.
+
+## April 1, 2026 (HTLC chaincode request)
+
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following architectural implementation to construct a highly resilient Hash Time-Locked Contract (HTLC) chaincode in Go for Hyperledger Fabric. You must strictly adhere to deterministic execution constraints, utilizing the Fabric transaction timestamp to prevent node clock drift and enforcing state-based double-spend prevention.
+
+Part 1: Package and Struct Definitions
+Create a new file at blockchain/chaincode/htlc.go. Import github.com/hyperledger/fabric-contract-api-go/contractapi, crypto/sha256, encoding/hex, encoding/json, and fmt.
+Define the HTLCContract struct embedding contractapi.Contract.
+Define the HTLC struct with exact JSON serialization tags: ContractID (string), Sender (string), Receiver (string), Amount (float64), HashLock (string), TimeLock (int64), and Status (string).
+Define three constant strings for state management: StatusLocked = "LOCKED", StatusClaimed = "CLAIMED", and StatusRefunded = "REFUNDED".
+
+Part 2: Internal Ledger State Management
+Implement a private helper function modifyBalance(ctx contractapi.TransactionContextInterface, userID string, amount float64) error. This function must read the state for balance_ + userID. If the state is nil, initialize the balance to 0. It will then add the amount (which can be negative for deductions), marshal the new float64 value, and write it back using ctx.GetStub().PutState().
+Implement a public function MintTokens(ctx contractapi.TransactionContextInterface, userID string, amount float64) error to act as a system faucet. This function calls modifyBalance with a positive amount to initialize client wallets for testing.
+
+Part 3: HTLC Creation (Escrow Protocol)
+Implement CreateLock(ctx contractapi.TransactionContextInterface, contractID, sender, receiver string, amount float64, hashLock string, durationSeconds int64) error.
+
+Retrieve the existing HTLC by contractID. If it already exists, return a critical error to prevent contract overwriting.
+
+Read the sender's current balance. If it is less than amount, return an insufficient funds error.
+
+Call modifyBalance(ctx, sender, -amount) to securely deduct the funds and place them into the contract's escrow state.
+
+Call ctx.GetStub().GetTxTimestamp() to acquire the deterministic consensus timestamp. Calculate the absolute expiration time: TimeLock = txTimestamp.Seconds + durationSeconds.
+
+Construct the HTLC object utilizing the provided parameters and set Status: StatusLocked.
+
+Serialize the object to JSON and commit it to the ledger using ctx.GetStub().PutState().
+
+Part 4: Cryptographic Claim (Preimage Verification)
+Implement Claim(ctx contractapi.TransactionContextInterface, contractID, preimage string) error.
+
+Retrieve and unmarshal the HTLC asset by contractID.
+
+Check if htlc.Status equals StatusLocked. If false, return a state transition error.
+
+Execute the SHA-256 algorithm on the provided preimage. Encode the resulting byte array to a hexadecimal string.
+
+Strictly compare the computed hex string against htlc.HashLock. If they differ, return a cryptographic mismatch error.
+
+If the hash matches, the contract is satisfied. Call modifyBalance(ctx, htlc.Receiver, htlc.Amount) to route the funds to the provider.
+
+Update htlc.Status = StatusClaimed. Marshal the updated struct and commit it to the ledger to finalize the transaction.
+
+Part 5: Time-Locked Refund Protocol
+Implement Refund(ctx contractapi.TransactionContextInterface, contractID string) error.
+
+Retrieve and unmarshal the HTLC asset by contractID.
+
+Check if htlc.Status equals StatusLocked. If false, return a state transition error.
+
+Call ctx.GetStub().GetTxTimestamp() to acquire the current ledger time.
+
+Compare the timestamp to the contract's expiration constraint. If txTimestamp.Seconds < htlc.TimeLock, return an active timelock error indicating the contract has not yet expired.
+
+If the timelock has expired, the client is entitled to their capital. Call modifyBalance(ctx, htlc.Sender, htlc.Amount) to return the locked funds.
+
+Update htlc.Status = StatusRefunded. Marshal and commit the updated asset to the ledger state.
+
+Part 6: Integration Logging
+Append this entire architectural prompt as a new entry in instructions.txt with today's date to maintain an auditable configuration history.
