@@ -11,3 +11,46 @@ For Option 1, write a function that automatically checks if the blockchain/fabri
 For Options 2, 3, and 4, implement placeholder functions that print 'Not implemented yet will be ready soon.'
 For Option 5, write logic that first prompts the user to input a 'Server ID' and a 'User ID'. After the user submits both strings, print 'Not implemented yet will be ready soon.'
 Log this exact prompt as a new entry in instructions.txt.
+
+## April 1, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-01</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following two-part implementation to add Hash Time-Locked Contract (HTLC) payments to the project. Do not make assumptions or add extra features outside of these explicit instructions.
+
+Part 1: Update `blockchain/gateway.py`
+1. Import the built-in `hashlib` and `secrets` modules at the top of the file.
+2. Create a new class named `HTLCManager`.
+3. Inside `HTLCManager`, implement `def create_lock(self, amount: float, receiver: str) -> dict:`. This method must generate a 32-byte random hex string using `secrets.token_hex(32)` and assign it to a variable named `preimage`. Hash this preimage using `hashlib.sha256(preimage.encode()).hexdigest()` and assign it to a variable named `payment_hash`. Return a dictionary containing the exact keys: `amount`, `receiver`, `preimage`, and `hash`.
+4. Implement `def verify_and_release(self, provided_preimage: str, stored_hash: str) -> bool:`. This method must hash the `provided_preimage` using `hashlib.sha256(provided_preimage.encode()).hexdigest()` and strictly compare it to the `stored_hash`. Return `True` if they match, and `False` otherwise.
+
+Part 2: Update `manager.py`
+1. In the main menu string, add a 6th option formatted exactly as: `6) Make Payment [Server id: server_001, Client id: client_001, Amount: 5.0]`
+2. Import the `HTLCManager` class from `blockchain.gateway`.
+3. Implement a new function named `execute_htlc_payment()`.
+4. Inside `execute_htlc_payment()`, define the following hardcoded variables: `sender_id = 'client_001'`, `receiver_id = 'server_001'`, and `amount = 5.0`. Add a comment above them stating: `# TODO: These IDs and amount will later be dynamic inputs from the Fabric ledger.`
+5. Instantiate the `HTLCManager` class.
+6. Call the `create_lock` method using the hardcoded `amount` and `receiver_id`. Store the returned dictionary in a variable named `lock_data`.
+7. Print the following sequence exactly to the terminal to execute the flow:
+   - `print("\n[HTLC] Generating Secret and Hash for transaction...")`
+   - `print(f"[HTLC] Locking {amount} tokens on blockchain for {receiver_id}...")`
+   - `print(f"       -> Hash: {lock_data['hash']}")`
+   - `print(f"[HTLC] Provider {receiver_id} is running LLM inference...")`
+8. Call the `verify_and_release` method using `lock_data['preimage']` and `lock_data['hash']`.
+9. Write an if/else block evaluating the boolean result. If `True`, print: `\n[HTLC] Verification Successful. Secret revealed!` followed by `[HTLC] Preimage: {lock_data['preimage']}` and `[HTLC] Payment of {amount} claimed by {receiver_id}.`. If `False`, print: `\n[HTLC] Error: Cryptographic verification failed. Payment locked.`
+10. Update the main while loop to call `execute_htlc_payment()` when the user inputs '6'.
+
+Part 3: Logging
+Append this exact prompt text as a new entry in the `instructions.txt` file with today's date.

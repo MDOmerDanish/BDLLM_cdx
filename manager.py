@@ -3,6 +3,8 @@ import os
 import subprocess
 import sys
 
+from blockchain.gateway import HTLCManager
+
 
 def setup_and_run_fabric():
     """Ensure Hyperledger Fabric network is up by running the provided setup script."""
@@ -57,6 +59,30 @@ def run_service():
     print("Not implemented yet will be ready soon.")
 
 
+def execute_htlc_payment():
+    # TODO: These IDs and amount will later be dynamic inputs from the Fabric ledger.
+    sender_id = "client_001"
+    receiver_id = "server_001"
+    amount = 5.0
+
+    htlc_manager = HTLCManager()
+    lock_data = htlc_manager.create_lock(amount, receiver_id)
+
+    print("\n[HTLC] Generating Secret and Hash for transaction...")
+    print(f"[HTLC] Locking {amount} tokens on blockchain for {receiver_id}...")
+    print(f"       -> Hash: {lock_data['hash']}")
+    print(f"[HTLC] Provider {receiver_id} is running LLM inference...")
+
+    verified = htlc_manager.verify_and_release(lock_data["preimage"], lock_data["hash"])
+
+    if verified:
+        print("\n[HTLC] Verification Successful. Secret revealed!")
+        print(f"[HTLC] Preimage: {lock_data['preimage']}")
+        print(f"[HTLC] Payment of {amount} claimed by {receiver_id}.")
+    else:
+        print("\n[HTLC] Error: Cryptographic verification failed. Payment locked.")
+
+
 def main_menu():
     while True:
         print("\n=== Main Menu ===")
@@ -65,6 +91,7 @@ def main_menu():
         print("3) LLM User Registration")
         print("4) View system servers and users")
         print("5) Run Service")
+        print("6) Make Payment [Server id: server_001, Client id: client_001, Amount: 5.0]")
         print("0) Exit")
         choice = input("Select an option: ").strip()
 
@@ -78,6 +105,8 @@ def main_menu():
             view_system_servers_and_users()
         elif choice == "5":
             run_service()
+        elif choice == "6":
+            execute_htlc_payment()
         elif choice == "0":
             print("Exiting.")
             sys.exit(0)
