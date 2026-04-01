@@ -124,3 +124,84 @@ Update htlc.Status = StatusRefunded. Marshal and commit the updated asset to the
 
 Part 6: Integration Logging
 Append this entire architectural prompt as a new entry in instructions.txt with today's date to maintain an auditable configuration history.
+
+## April 1, 2026 (HTLC demonstration suite)
+
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to build an interactive Hash Time-Locked Contract (HTLC) Demonstration Suite. Treat the HTLC cryptographic logic as a strict black box. You must manipulate inputs from the client side to trigger existing validation rules. Follow this numbered architecture exactly.
+
+### Phase 1: Refactor `blockchain/gateway.py` (Fabric SDK Simulation)
+Modify the `HTLCManager` class to simulate gRPC calls to the Go chaincode. Do not alter `create_lock()`. Delete `verify_and_release()`.
+
+1.1. Implement `def submit_lock_to_chain(self, contract_id: str, sender: str, receiver: str, amount: float, hash_lock: str, duration: int) -> bool:`
+  1.1.1. Add a simulated balance check: `if amount > 100.0:`
+  1.1.2. Inside the if block, print `[Fabric Chaincode Error] Insufficient funds in sender wallet.` and `return False`.
+  1.1.3. Outside the if block, print `[Fabric Gateway] Submitting HTLC Lock to blockchain state...` and `return True`.
+
+1.2. Implement `def submit_claim_to_chain(self, contract_id: str, provided_preimage: str, expected_preimage: str) -> bool:`
+  1.2.1. Add a simulated cryptographic check: `if provided_preimage != expected_preimage:`
+  1.2.2. Inside the if block, print `[Fabric Chaincode Error] Invalid preimage. Hash mismatch. Payment locked.` and `return False`.
+  1.2.3. Outside the if block, print `[Fabric Gateway] Claim verified. Funds routed to receiver.` and `return True`.
+
+1.3. Implement `def submit_refund_to_chain(self, contract_id: str) -> bool:`
+  1.3.1. Print `[Fabric Gateway] Submitting HTLC Refund request to blockchain...`
+  1.3.2. Print `[Fabric Gateway] Timelock expired. Funds successfully returned to sender.`
+  1.3.3. `return True`.
+
+### Phase 2: Refactor `manager.py` (Interactive Integration Test Suite)
+Rewrite the `execute_htlc_payment()` function to loop through four distinct testing vectors.
+
+2.1. Inside `execute_htlc_payment()`, import the `time` module at the top of the function.
+2.2. Instantiate the gateway: `gateway = HTLCManager()`.
+2.3. Define the static parameters: `contract_id = "htlc_test_01"`, `sender_id = "client_001"`, and `receiver_id = "server_001"`.
+2.4. Initialize a `while True:` loop.
+2.5. Inside the loop, print the exact menu string:
+  `\n=== HTLC Demonstration Suite ===`
+  `1) Smooth Transaction (Happy Path)`
+  `2) Malicious Server (Guessing Attack)`
+  `3) Client Abort (Refund)`
+  `4) Double Spend (Insufficient Funds)`
+  `0) Return to Main Menu`
+2.6. Prompt the user for input using `test_choice = input("Select a scenario: ")`.
+
+2.7. Implement `if test_choice == "1":` (Smooth Transaction)
+  2.7.1. Set `amount = 5.0`. Call `lock_data = gateway.create_lock(amount, receiver_id)`.
+  2.7.2. Print the generated Hash.
+  2.7.3. Call `gateway.submit_lock_to_chain(contract_id, sender_id, receiver_id, amount, lock_data['hash'], 3600)`.
+  2.7.4. Print `[HTLC] Provider is processing LLM inference to earn the preimage...`
+  2.7.5. Call `gateway.submit_claim_to_chain(contract_id, lock_data['preimage'], lock_data['preimage'])`.
+
+2.8. Implement `elif test_choice == "2":` (Guessing Attack)
+  2.8.1. Set `amount = 5.0`. Call `lock_data = gateway.create_lock(amount, receiver_id)`.
+  2.8.2. Call `gateway.submit_lock_to_chain(contract_id, sender_id, receiver_id, amount, lock_data['hash'], 3600)`.
+  2.8.3. Print `[HTLC] ALERT: Malicious server attempting to guess the secret...`
+  2.8.4. Call `gateway.submit_claim_to_chain(contract_id, "malicious_fake_preimage_123", lock_data['preimage'])`.
+
+2.9. Implement `elif test_choice == "3":` (Client Abort)
+  2.9.1. Set `amount = 5.0`. Call `lock_data = gateway.create_lock(amount, receiver_id)`.
+  2.9.2. Call `gateway.submit_lock_to_chain(contract_id, sender_id, receiver_id, amount, lock_data['hash'], 2)`.
+  2.9.3. Print `[HTLC] Server unresponsive. Waiting for 2-second timelock to expire...`
+  2.9.4. Call `time.sleep(3)`.
+  2.9.5. Call `gateway.submit_refund_to_chain(contract_id)`.
+
+2.10. Implement `elif test_choice == "4":` (Double Spend)
+  2.10.1. Set `amount = 9999.0`. Call `lock_data = gateway.create_lock(amount, receiver_id)`.
+  2.10.2. Print `[HTLC] Client attempting to lock 9999.0 tokens...`
+  2.10.3. Call `gateway.submit_lock_to_chain(contract_id, sender_id, receiver_id, amount, lock_data['hash'], 3600)`.
+
+2.11. Implement `elif test_choice == "0":`
+  2.11.1. Execute `break`.
+
+2.12. Implement `else:`
+  2.12.1. Print `Invalid selection.`
+
+### Phase 3: Auditable Logging
+3.1. Open `instructions.txt`.
+3.2. Append this exact multi-phase prompt string to the end of the file with today's date.

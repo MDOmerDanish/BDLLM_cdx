@@ -60,27 +60,51 @@ def run_service():
 
 
 def execute_htlc_payment():
-    # TODO: These IDs and amount will later be dynamic inputs from the Fabric ledger.
+    import time
+
+    gateway = HTLCManager()
+    contract_id = "htlc_test_01"
     sender_id = "client_001"
     receiver_id = "server_001"
-    amount = 5.0
 
-    htlc_manager = HTLCManager()
-    lock_data = htlc_manager.create_lock(amount, receiver_id)
+    while True:
+        print("\n=== HTLC Demonstration Suite ===")
+        print("1) Smooth Transaction (Happy Path)")
+        print("2) Malicious Server (Guessing Attack)")
+        print("3) Client Abort (Refund)")
+        print("4) Double Spend (Insufficient Funds)")
+        print("0) Return to Main Menu")
+        test_choice = input("Select a scenario: ")
 
-    print("\n[HTLC] Generating Secret and Hash for transaction...")
-    print(f"[HTLC] Locking {amount} tokens on blockchain for {receiver_id}...")
-    print(f"       -> Hash: {lock_data['hash']}")
-    print(f"[HTLC] Provider {receiver_id} is running LLM inference...")
-
-    verified = htlc_manager.verify_and_release(lock_data["preimage"], lock_data["hash"])
-
-    if verified:
-        print("\n[HTLC] Verification Successful. Secret revealed!")
-        print(f"[HTLC] Preimage: {lock_data['preimage']}")
-        print(f"[HTLC] Payment of {amount} claimed by {receiver_id}.")
-    else:
-        print("\n[HTLC] Error: Cryptographic verification failed. Payment locked.")
+        if test_choice == "1":
+            amount = 5.0
+            lock_data = gateway.create_lock(amount, receiver_id)
+            print(f"[HTLC] Generated hash: {lock_data['hash']}")
+            gateway.submit_lock_to_chain(contract_id, sender_id, receiver_id, amount, lock_data["hash"], 3600)
+            print("[HTLC] Provider is processing LLM inference to earn the preimage...")
+            gateway.submit_claim_to_chain(contract_id, lock_data["preimage"], lock_data["preimage"])
+        elif test_choice == "2":
+            amount = 5.0
+            lock_data = gateway.create_lock(amount, receiver_id)
+            gateway.submit_lock_to_chain(contract_id, sender_id, receiver_id, amount, lock_data["hash"], 3600)
+            print("[HTLC] ALERT: Malicious server attempting to guess the secret...")
+            gateway.submit_claim_to_chain(contract_id, "malicious_fake_preimage_123", lock_data["preimage"])
+        elif test_choice == "3":
+            amount = 5.0
+            lock_data = gateway.create_lock(amount, receiver_id)
+            gateway.submit_lock_to_chain(contract_id, sender_id, receiver_id, amount, lock_data["hash"], 2)
+            print("[HTLC] Server unresponsive. Waiting for 2-second timelock to expire...")
+            time.sleep(3)
+            gateway.submit_refund_to_chain(contract_id)
+        elif test_choice == "4":
+            amount = 9999.0
+            lock_data = gateway.create_lock(amount, receiver_id)
+            print("[HTLC] Client attempting to lock 9999.0 tokens...")
+            gateway.submit_lock_to_chain(contract_id, sender_id, receiver_id, amount, lock_data["hash"], 3600)
+        elif test_choice == "0":
+            break
+        else:
+            print("Invalid selection.")
 
 
 def main_menu():
