@@ -1379,3 +1379,52 @@ Phase 4: Off-Chain Architecture Documentation (docs/offchain_architecture.md)
 Phase 5: Auditable Logging
 5.1. Open instructions.txt.
 5.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+
+## April 10, 2026
+
+# Context from my IDE setup:
+
+## Active file: README.md
+
+## Open tabs:
+- README.md: README.md
+- COMMIT_EDITMSG: .git/COMMIT_EDITMSG
+
+## My request for Codex:
+Review the current project codebase to generate technical Markdown documentation. You must analyze the existing Python, shell, and Go scripts to accurately describe the system and construct structural ASCII architecture diagrams based on the actual code.
+
+Execute the following documentation sequence:
+
+Phase 1: Root Overview (README.md)
+Create or update README.md in the project root.
+
+Write a high-level technical overview of the BDLLM project based on your code analysis.
+
+Include a section titled "System Architecture: On-Chain vs. Off-Chain".
+
+Read the project files to generate a comprehensive ASCII block diagram. This diagram must visually separate the off-chain components (Python orchestrator, FastAPI LLM node) from the on-chain components (Hyperledger Fabric network, Go chaincode).
+
+Define the exact responsibilities of these two environments.
+
+Phase 2: On-Chain Architecture (docs/onchain_architecture.md)
+Create the docs/ directory if it does not exist and generate docs/onchain_architecture.md.
+
+Analyze the scripts inside the blockchain/ directory and the Go chaincode files.
+
+Generate an ASCII diagram detailing the Hyperledger Fabric components and the specific chaincode function structures you find in the Go code.
+
+Write a technical description of the network setup, deployment lifecycle, and smart contract execution.
+
+Phase 3: Off-Chain Architecture (docs/offchain_architecture.md)
+Generate docs/offchain_architecture.md.
+
+Analyze manager.py, llm_client/llm_client.py, and llm_server/engine_server.py.
+
+Generate an ASCII data flow diagram illustrating the request lifecycle from the CLI orchestrator to the FastAPI inference node.
+
+Document the local environment strategy, detailing the LLM client interactions and the custom PlanetServe-style server implementation.
+
+Phase 4: Auditable Logging
+Open instructions.txt.
+
+Append this exact multi-phase prompt string to the end of the file with today's date.
