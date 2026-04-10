@@ -1303,3 +1303,15 @@ echo "Deployment script execution finished."
 Phase 4: Auditable Logging
 4.1. Open instructions.txt.
 4.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+
+## April 10, 2026
+
+Execute the following implementation to enforce directory isolation and clean the project root. You must move the orphaned Go dependency folder into the designated blockchain directory. Follow this numbered architecture exactly.
+
+Phase 1: Directory Relocation
+1.1. Locate the vendor directory in the project root (BDLLM_cdx).
+1.2. Move the entire vendor directory and all its contents into the blockchain directory.
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
