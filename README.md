@@ -1,22 +1,38 @@
-# BDLLM: Decentralized LLM Marketplace
+# BDLLM Documentation Hub
 
-A blockchain-based marketplace for Large Language Models (LLMs), enabling decentralized access, hosting, and verification of AI models.
+BDLLM (Blockchain Distributed LLM Marketplace) unifies a Python-powered orchestration layer with a Hyperledger Fabric-backed ledger so that inference providers, clients, and contract logic can be audited end-to-end.
 
-## Project Vision
-* **Decentralization:** Remove central authorities in model hosting.
-* **Security:** Ensure model integrity and provider privacy.
-* **Marketplace:** Enable a peer-to-peer economy for LLM inference and training.
+## System Architecture: On-Chain vs. Off-Chain
+```
++---------------------------------------------+
+| Off-Chain Components                        |
+|  +---------------------+    +-------------+ |
+|  | Python Orchestrator |--->| LLM Server  | |
+|  | (manager.py)        |    | overlay     | |
+|  +---------------------+    +-------------+ |
+|             |                     ^         |
+|             v                     |         |
+|         +-----------+------------+         |
+|         | LLM Client|<---------------------+
+|         +-----------+                      |
++---------------------------------------------+
+| On-Chain Components                         |
+|  +------------------------------+           |
+|  | Hyperledger Fabric Test      |           |
+|  | Network (peers, orderer, CA) |           |
+|  +------------------------------+           |
+|              |                              |
+|              v                              |
+|         +-------------------+                |
+|         | HTLC Chaincode    |                |
+|         | (Go: Lock/Claim/   |                |
+|         | Refund/State)     |                |
+|         +-------------------+                |
++---------------------------------------------+
+```
 
-## Tech Stack
-* **Language:** Python 3.10+
-* **Blockchain:** [To be decided]
-* **API Framework:** FastAPI
-* **AI Integration:** Gemini / Nano Banana / Local LLMs
+**Off-chain gateway responsibility:** coordinate CLI/REST triggers, gather prompts, call the isolated LLM client, and relay responses while keeping payment verification hooks ready for the HTLC workflow.
 
-## Getting Started
-1. **Clone the repository:**
-   `git clone https://github.com/mdomerdanish/BDLLM_cdx.git`
-2. **Setup Virtual Environment:**
-   `python3 -m venv venv && source venv/bin/activate`
-3. **Install Dependencies:**
-   `pip install -r requirements.txt`
+**On-chain ledger responsibility:** enforce determinism via Fabric peers, hold HTLC contract state, validate pre-images, and ensure funds move only when cryptographic locks and timelocks satisfy policy.
+
+See `docs/blockchain_architecture.md` for Fabric-specific guidance and `docs/offchain_architecture.md` for the Python ecosystem details.

@@ -1341,3 +1341,41 @@ Phase 2: Refactor manager.py (Import Correction)
 Phase 3: Auditable Logging
 3.1. Open instructions.txt.
 3.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+
+## April 10, 2026
+
+# Context from my IDE setup:
+
+## Active file: README.md
+
+## Open tabs:
+- README.md: README.md
+
+## My request for Codex:
+Execute the following implementation to generate comprehensive, diagram-heavy Markdown documentation for the BDLLM project. You must create a main overview file and isolated component files using ASCII block diagrams to illustrate architectures. Follow this numbered directory and file structure exactly.
+
+Phase 1: Documentation Directory Initialization
+1.1. In the project root (BDLLM_cdx), create a new directory named docs.
+
+Phase 2: Root Overview Generation (README.md)
+2.1. Open or create README.md in the project root.
+2.2. Replace its contents entirely with a high-level system overview.
+2.3. You must include a section explicitly titled "System Architecture: On-Chain vs. Off-Chain".
+2.4. Under this section, generate a detailed ASCII block diagram using a markdown code block. The diagram must clearly separate the Off-Chain components (Python Orchestrator, LLM Server overlay, LLM Client) from the On-Chain components (Hyperledger Fabric Test Network, HTLC Chaincode).
+2.5. Below the diagram, write brief technical definitions for the exact responsibilities of the off-chain gateway versus the on-chain ledger.
+
+Phase 3: Blockchain Architecture Documentation (docs/blockchain_architecture.md)
+3.1. Create a new file docs/blockchain_architecture.md.
+3.2. Generate a detailed architectural breakdown of the Hyperledger Fabric implementation.
+3.3. Include an ASCII diagram specifically detailing the Chaincode Architecture. Format this diagram to look exactly like standard nested text boxes (e.g., a large box for "Chaincodes" containing a smaller box for "htlc (Go)" with functions like LockFunds(), ClaimFunds(), and Refund()).
+3.4. Document the deployment lifecycle, detailing the function of setup_fabric.sh (hard reset, volume pruning) and deploy_htlc.sh (Go module initialization, packaging).
+
+Phase 4: Off-Chain Architecture Documentation (docs/offchain_architecture.md)
+4.1. Create a new file docs/offchain_architecture.md.
+4.2. Generate a detailed breakdown of the local Python ecosystem.
+4.3. Include an ASCII flow diagram illustrating the request lifecycle: Orchestrator (manager.py) -> LLM Client (llm_client.py) -> Custom LLM Node (engine_server.py running OPT-125M).
+4.4. Detail the environmental isolation strategy, specifically explaining why the vllm_env virtual environment and dependency pinning (transformers==4.45.2, vllm==0.6.2) are strictly required to bypass GPU architecture limitations.
+
+Phase 5: Auditable Logging
+5.1. Open instructions.txt.
+5.2. Append this exact multi-phase prompt string to the end of the file with today's date.
