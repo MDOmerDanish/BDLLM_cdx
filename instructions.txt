@@ -1496,3 +1496,46 @@ Phase 3: Eradicate Registry Chaincode
 Phase 4: Auditable Logging
 4.1. Open instructions.txt in the root directory.
 4.2. Append this exact multi-phase prompt string to the end of the file with today's date to document the scope reduction.
+
+## April 10, 2026
+
+# Context from my IDE setup:
+
+## Active file: README.md
+
+## Open tabs:
+- README.md: README.md
+- COMMIT_EDITMSG: .git/COMMIT_EDITMSG
+
+## My request for Codex:
+Execute the following implementation to consolidate the HTLC and Payment functionalities into a unified interface. You must update the main menu layout and create a dedicated sub-menu for payment channel operations. Follow this numbered architecture exactly.
+
+Phase 1: Refactor manager.py (Main Menu Consolidation)
+1.1. Open manager.py.
+1.2. Locate the === Main Menu === print block.
+1.3. Replace the existing "Make Payment" and "Deploy HTLC Smart Contract" options with a single entry exactly formatted as: 2) Setup Payment Channel with HTLC.
+1.4. Renumber the subsequent option. "LLM Server Management" must become option 3.
+1.5. Ensure "Exit" remains 0.
+
+Phase 2: Create Sub-Menu Logic (manage_htlc_payment)
+2.1. In manager.py, define a new function named manage_htlc_payment().
+2.2. Inside this function, instantiate a while True: loop to handle the sub-menu.
+2.3. Print the sub-menu exactly as follows:
+\n=== HTLC Payment Channel Operations ===
+1) Deploy HTLC Smart Contract
+2) Make Payment [Server id: server_001, Client id: client_001, Amount: 5.0]
+0) Return to Main Menu
+2.4. Prompt the user for input using htlc_choice = input("Select an option: ").
+2.5. Implement if htlc_choice == "1":. Relocate the existing code execution block that previously handled the "Deploy HTLC Smart Contract" root option into this block.
+2.6. Implement elif htlc_choice == "2":. Relocate the existing code execution block that previously handled the "Make Payment" root option into this block.
+2.7. Implement elif htlc_choice == "0":. Execute break.
+
+Phase 3: Route Main Menu Input
+3.1. Update the main while True: loop in manager.py.
+3.2. Route input selection "2" to call the new manage_htlc_payment() function.
+3.3. Update the routing for "3" to call manage_llm_server().
+3.4. Remove the orphaned routing blocks that previously handled the separated deploy and payment options.
+
+Phase 4: Auditable Logging
+4.1. Open instructions.txt.
+4.2. Append this exact multi-phase prompt string to the end of the file with today's date.

@@ -127,6 +127,24 @@ def execute_htlc_payment():
             print("Invalid selection.")
 
 
+def manage_htlc_payment():
+    while True:
+        print("\n=== HTLC Payment Channel Operations ===")
+        print("1) Deploy HTLC Smart Contract")
+        print("2) Make Payment [Server id: server_001, Client id: client_001, Amount: 5.0]")
+        print("0) Return to Main Menu")
+        htlc_choice = input("Select an option: ").strip()
+
+        if htlc_choice == "1":
+            deploy_chaincode()
+        elif htlc_choice == "2":
+            execute_htlc_payment()
+        elif htlc_choice == "0":
+            break
+        else:
+            print("Invalid selection.")
+
+
 def manage_llm_server():
     while True:
         print("\n=== LLM Server Operations ===")
@@ -175,22 +193,16 @@ def main_menu():
     while True:
         print("\n=== Main Menu ===")
         print("1) Set up and Run Hyperledger Fabric Blockchain")
-        print("2) Run Service")
-        print("3) Make Payment [Server id: server_001, Client id: client_001, Amount: 5.0]")
-        print("4) Deploy HTLC Smart Contract")
-        print("5) LLM Server Management")
+        print("2) Setup Payment Channel with HTLC")
+        print("3) LLM Server Management")
         print("0) Exit")
         choice = input("Select an option: ").strip()
 
         if choice == "1":
             setup_and_run_fabric()
         elif choice == "2":
-            run_service()
+            manage_htlc_payment()
         elif choice == "3":
-            execute_htlc_payment()
-        elif choice == "4":
-            deploy_chaincode()
-        elif choice == "5":
             manage_llm_server()
         elif choice == "0":
             print("Exiting.")
