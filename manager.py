@@ -65,18 +65,6 @@ def setup_and_run_fabric():
             print("[Error] Fabric recovery failed. Please check Docker daemon.")
 
 
-def llm_server_registration():
-    print("Not implemented yet will be ready soon.")
-
-
-def llm_user_registration():
-    print("Not implemented yet will be ready soon.")
-
-
-def view_system_servers_and_users():
-    print("Not implemented yet will be ready soon.")
-
-
 def run_service():
     server_id = input("Server ID: ").strip()
     user_id = input("User ID: ").strip()
@@ -187,31 +175,22 @@ def main_menu():
     while True:
         print("\n=== Main Menu ===")
         print("1) Set up and Run Hyperledger Fabric Blockchain")
-        print("2) LLM Server Registration")
-        print("3) LLM User Registration")
-        print("4) View system servers and users")
-        print("5) Run Service")
-        print("6) Make Payment [Server id: server_001, Client id: client_001, Amount: 5.0]")
-        print("7) Deploy HTLC Smart Contract.")
-        print("8) LLM Server Management")
+        print("2) Run Service")
+        print("3) Make Payment [Server id: server_001, Client id: client_001, Amount: 5.0]")
+        print("4) Deploy HTLC Smart Contract")
+        print("5) LLM Server Management")
         print("0) Exit")
         choice = input("Select an option: ").strip()
 
         if choice == "1":
             setup_and_run_fabric()
         elif choice == "2":
-            llm_server_registration()
-        elif choice == "3":
-            llm_user_registration()
-        elif choice == "4":
-            view_system_servers_and_users()
-        elif choice == "5":
             run_service()
-        elif choice == "6":
+        elif choice == "3":
             execute_htlc_payment()
-        elif choice == "7":
+        elif choice == "4":
             deploy_chaincode()
-        elif choice == "8":
+        elif choice == "5":
             manage_llm_server()
         elif choice == "0":
             print("Exiting.")

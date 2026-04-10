@@ -1428,3 +1428,71 @@ Phase 4: Auditable Logging
 Open instructions.txt.
 
 Append this exact multi-phase prompt string to the end of the file with today's date.
+
+## April 10, 2026
+
+# Context from my IDE setup:
+
+## Active file: README.md
+
+## Open tabs:
+- README.md: README.md
+- COMMIT_EDITMSG: .git/COMMIT_EDITMSG
+
+## My request for Codex:
+Execute the following implementation to prune the incomplete Server and Client Registration features from the codebase. You must remove the UI options, the Python integration logic, and the associated Go smart contracts. Follow this numbered architecture exactly.
+
+Phase 1: Refactor manager.py (Orchestrator Cleanup)
+1.1. Open manager.py.
+1.2. Locate the === Main Menu === print block.
+1.3. Delete the options for "LLM Server Registration", "LLM User Registration", and "View system servers and users".
+1.4. Renumber the remaining menu options sequentially (e.g., 1: Setup Fabric, 2: Run Service, 3: Make Payment, 4: Deploy HTLC, 5: LLM Server Management, 0: Exit).
+1.5. Locate and completely delete the Python functions that handle these deleted options (e.g., functions likely named register_server(), register_user(), view_entities(), etc.).
+1.6. Update the main while True: loop to route the newly renumbered inputs to their correct remaining functions. Remove the routing logic for the deleted registration functions.
+
+Phase 2: Refactor blockchain/gateway.py (Integration Cleanup)
+2.1. Open blockchain/gateway.py.
+2.2. Locate and completely delete any functions designed to interact with the registration smart contracts (e.g., functions submitting transactions for RegisterServer, UpdateServer, QueryServer, etc.).
+2.3. Ensure that only the functions related to HTLC/Payment channels and basic network interaction remain.
+
+Phase 3: Eradicate Registry Chaincode
+3.1. Navigate to the blockchain/chaincode/ directory.
+3.2. If a directory or file exists specifically for server_registry or user registration smart contracts (as previously documented in the architecture), permanently delete it. We are exclusively keeping the HTLC/Payment channel chaincode.
+
+Phase 4: Auditable Logging
+4.1. Open instructions.txt in the root directory.
+4.2. Append this exact multi-phase prompt string to the end of the file with today's date to document the scope reduction.
+
+## April 10, 2026
+
+# Context from my IDE setup:
+
+## Active file: README.md
+
+## Open tabs:
+- README.md: README.md
+- COMMIT_EDITMSG: .git/COMMIT_EDITMSG
+
+## My request for Codex:
+Execute the following implementation to prune the incomplete Server and Client Registration features from the codebase. You must remove the UI options, the Python integration logic, and the associated Go smart contracts. Follow this numbered architecture exactly.
+
+Phase 1: Refactor manager.py (Orchestrator Cleanup)
+1.1. Open manager.py.
+1.2. Locate the === Main Menu === print block.
+1.3. Delete the options for "LLM Server Registration", "LLM User Registration", and "View system servers and users".
+1.4. Renumber the remaining menu options sequentially (e.g., 1: Setup Fabric, 2: Run Service, 3: Make Payment, 4: Deploy HTLC, 5: LLM Server Management, 0: Exit).
+1.5. Locate and completely delete the Python functions that handle these deleted options (e.g., functions likely named register_server(), register_user(), view_entities(), etc.).
+1.6. Update the main while True: loop to route the newly renumbered inputs to their correct remaining functions. Remove the routing logic for the deleted registration functions.
+
+Phase 2: Refactor blockchain/gateway.py (Integration Cleanup)
+2.1. Open blockchain/gateway.py.
+2.2. Locate and completely delete any functions designed to interact with the registration smart contracts (e.g., functions submitting transactions for RegisterServer, UpdateServer, QueryServer, etc.).
+2.3. Ensure that only the functions related to HTLC/Payment channels and basic network interaction remain.
+
+Phase 3: Eradicate Registry Chaincode
+3.1. Navigate to the blockchain/chaincode/ directory.
+3.2. If a directory or file exists specifically for server_registry or user registration smart contracts (as previously documented in the architecture), permanently delete it. We are exclusively keeping the HTLC/Payment channel chaincode.
+
+Phase 4: Auditable Logging
+4.1. Open instructions.txt in the root directory.
+4.2. Append this exact multi-phase prompt string to the end of the file with today's date to document the scope reduction.
