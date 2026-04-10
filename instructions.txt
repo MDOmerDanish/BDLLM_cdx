@@ -1259,3 +1259,47 @@ deactivate
 Phase 2: Auditable Logging
 2.1. Open instructions.txt.
 2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 10, 2026
+
+Execute the following implementation to eradicate duplicate Hyperledger Fabric dependencies and enforce strict directory isolation. You must delete the root copies and update the execution paths in the bash scripts. Follow this numbered architecture exactly.
+
+Phase 1: Eradicate Root Duplicates
+1.1. In the root directory (BDLLM_cdx), locate and permanently delete the file install-fabric.sh.
+1.2. In the root directory, locate and permanently delete the entire fabric-samples directory. Do not delete the install-fabric.sh file or the fabric-samples directory located inside the blockchain folder.
+
+Phase 2: Overhaul blockchain/setup_fabric.sh (Path Isolation)
+2.1. Open blockchain/setup_fabric.sh.
+2.2. Locate the line that resolves the test-network directory (e.g., cd "$SCRIPT_DIR/../fabric-samples/test-network/" || exit).
+2.3. Update the path resolution to target the local directory explicitly. Replace the navigation command with:
+cd "$SCRIPT_DIR/fabric-samples/test-network/" || exit
+
+Phase 3: Overhaul blockchain/deploy_htlc.sh (Path Isolation)
+3.1. Open blockchain/deploy_htlc.sh.
+3.2. Completely replace its contents with the following bash script to ensure perfect relative pathing from within the blockchain directory:
+
+Bash
+
+#!/bin/bash
+echo "Enforcing strict directory isolation..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# 1. Navigate explicitly into the chaincode folder
+cd "$SCRIPT_DIR/chaincode" || exit
+
+echo "Initializing Go dependencies for HTLC chaincode..."
+rm -f go.mod go.sum
+go mod init htlc
+go mod tidy
+
+# 2. Navigate to the local Fabric test network
+cd "$SCRIPT_DIR/fabric-samples/test-network/" || exit
+
+echo "Deploying HTLC to Fabric channel..."
+# Ensure the chaincode path targets the blockchain directory correctly
+./network.sh deployCC -ccn htlc -ccp ../../chaincode/ -ccl go -c bdllmchannel
+
+echo "Deployment script execution finished."
+
+Phase 4: Auditable Logging
+4.1. Open instructions.txt.
+4.2. Append this exact multi-phase prompt string to the end of the file with today's date.
