@@ -1315,3 +1315,29 @@ Phase 1: Directory Relocation
 Phase 2: Auditable Logging
 2.1. Open instructions.txt.
 2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+
+## April 10, 2026
+
+# Context from my IDE setup:
+
+## Active file: README.md
+
+## Open tabs:
+- README.md: README.md
+
+## My request for Codex:
+Execute the following implementation to migrate the client script into the existing client directory and update the orchestrator imports. Follow this numbered architecture exactly.
+
+Phase 1: Module Initialization & Migration
+1.1. In the existing llm_client directory located in the project root, ensure an empty __init__.py file exists to initialize it as a Python module. Create it if it does not exist.
+1.2. Move the file llm_client.py from the llm_server directory into the llm_client directory.
+
+Phase 2: Refactor manager.py (Import Correction)
+2.1. Open manager.py.
+2.2. Locate the function manage_llm_server().
+2.3. Find the import statement exactly matching: from llm_server.llm_client import query_llm.
+2.4. Replace that import statement exactly with: from llm_client.llm_client import query_llm.
+
+Phase 3: Auditable Logging
+3.1. Open instructions.txt.
+3.2. Append this exact multi-phase prompt string to the end of the file with today's date.

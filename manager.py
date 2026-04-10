@@ -161,7 +161,7 @@ def manage_llm_server():
                 print("[Error] Failed to start vLLM server. Check the script output for details.")
         elif llm_choice == "2":
             user_prompt = input("Enter prompt for Custom LLM Node: ")
-            from llm_server.llm_client import query_llm
+            from llm_client.llm_client import query_llm
 
             response = query_llm(user_prompt)
             if response:
