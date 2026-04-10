@@ -1,19 +1,15 @@
-# Python virtual environments
-venv/
-.venv/
-env/
-__pycache__/
-*.py[cod]
-
-# Environment variables and secrets
-.env
-*.pem
-*.key
-
-# VS Code specific
-.vscode/
-.history/
-
-# OS specific
-.DS_Store
-Thumbs.db
+# Hyperledger Fabric & Blockchain heavy files
+fabric-samples/bin/
+fabric-samples/config/
+fabric-samples/builders/
+**/node_modules/
+**/vendor/
+build/
+dist/
+vendor/
+llm_server/vllm_env/
+vendor/
+fabric-samples/
+node_modules/
+vllm_env/
+*.tar.gz

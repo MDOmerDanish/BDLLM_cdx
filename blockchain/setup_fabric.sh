@@ -1,16 +1,15 @@
 #!/bin/bash
 
-# Download the official Hyperledger Fabric install script
-curl -o install-fabric.sh https://raw.githubusercontent.com/hyperledger/fabric/main/scripts/install-fabric.sh
-
-# Make the script executable
-chmod +x install-fabric.sh
-
-# Run the script to fetch Docker images, binaries, and fabric-samples repository
-./install-fabric.sh docker binary samples
-
-# Navigate to the test-network directory
-cd fabric-samples/test-network
-
-# Bring up the network, create a channel named 'bdllmchannel', and use Certificate Authorities
-./network.sh up createChannel -c bdllmchannel -ca
+echo "Executing hard reset of Fabric environment..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR/../fabric-samples/test-network/" || exit
+echo "Tearing down existing network structures..."
+./network.sh down
+echo "Purging orphaned Docker containers, networks, and ghost volumes..."
+docker container prune -f
+docker network prune -f
+docker volume prune -f
+echo "Wiping leftover cryptographic artifacts..."
+rm -rf organizations/peerOrganizations organizations/ordererOrganizations channel-artifacts
+echo "Rebuilding Fabric network and channel..."
+./network.sh up createChannel -c bdllmchannel

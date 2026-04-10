@@ -205,3 +205,1057 @@ Rewrite the `execute_htlc_payment()` function to loop through four distinct test
 ### Phase 3: Auditable Logging
 3.1. Open `instructions.txt`.
 3.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to package and deploy the HTLC smart contract to the Hyperledger Fabric channel. You must place the deployment script in the blockchain directory and update the Python orchestrator to execute it from that path. Follow this numbered architecture exactly.
+
+Phase 1: Create the Deployment Script
+1.1. Create a new file named deploy_htlc.sh specifically inside the blockchain/ directory.
+1.2. Insert #!/bin/bash at the top of the file.
+1.3. Add the following commands exactly to initialize the Go module dependencies. The relative paths assume the script runs from the blockchain directory:
+echo "Initializing Go dependencies for HTLC chaincode..."
+cd chaincode/
+go mod init htlc
+go mod tidy
+1.4. Add the following commands exactly to navigate to the Fabric network and deploy the chaincode:
+cd ../../fabric-samples/test-network/
+echo "Deploying HTLC to Fabric channel..."
+./network.sh deployCC -ccn htlc -ccp ../../blockchain/chaincode/ -ccl go -c bdllmchannel
+cd ../../
+echo "Deployment script execution finished."
+1.5. Ensure you apply executable permissions to this script if your environment permits.
+
+Phase 2: Refactor manager.py (Deployment Execution)
+2.1. Open manager.py. Import the subprocess module at the top of the file if it is not already present.
+2.2. In the main_menu() string, add a new option exactly as formatted: 7) Deploy HTLC Smart Contract.
+2.3. Create a new function named deploy_chaincode().
+2.4. Inside deploy_chaincode(), add a try...except block.
+2.5. Within the try block, execute the bash script using subprocess.run(['bash', './blockchain/deploy_htlc.sh'], check=True).
+2.6. Within the except subprocess.CalledProcessError as e: block, print [Error] Chaincode deployment failed. Check the Fabric network status.
+2.7. Update the main while True: loop to call deploy_chaincode() when the user inputs 7.
+
+Phase 3: Auditable Logging
+3.1. Open instructions.txt.
+3.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+
+## April 9, 2026
+
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to add diagnostic logging to the Hyperledger Fabric detection logic. You must use the subprocess module to query Docker states directly. Follow this numbered architecture exactly.
+
+Phase 1: Refactor manager.py (Network Detection Diagnostics)
+1.1. Open manager.py. Ensure the subprocess module is imported at the top of the file.
+1.2. Locate the function responsible for executing Option 1 (Set up and Run Hyperledger Fabric Blockchain).
+1.3. Immediately before the script checks if the network is running, insert a diagnostic block.
+1.4. Execute the following subprocess command to check the container state: docker_check = subprocess.run(['docker', 'ps', '-a', '--filter', 'name=peer0.org1', '--format', '{{.Status}}'], capture_output=True, text=True)
+1.5. Evaluate the output using status_output = docker_check.stdout.strip().
+1.6. Implement if "Up" in status_output:
+1.6.1. Print [Fabric Diagnostic] Active peer containers detected. Network is live.
+1.7. Implement elif "Exited" in status_output:
+1.7.1. Print [Fabric Diagnostic] Network containers exist but are currently STOPPED. This usually occurs after a system reboot or Docker service restart.
+1.8. Implement elif status_output == "":
+1.8.1. Print [Fabric Diagnostic] No Fabric containers found. The environment is entirely clean.
+1.9. Ensure the existing logic that triggers setup_fabric.sh only executes if the network is not "Up". Before triggering it, print [Action] Triggering setup_fabric.sh to restore network state...
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to enforce a deterministic Hyperledger Fabric recovery sequence. You must update the bash script located in the blockchain directory to clear dead states, and refactor the Python orchestrator to execute synchronously. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul blockchain/setup_fabric.sh
+1.1. Open blockchain/setup_fabric.sh.
+1.2. Completely replace its contents with the following bash commands to ensure a hard reset.
+1.3. Insert #!/bin/bash at the top.
+1.4. Insert echo "Executing hard reset of Fabric environment...".
+1.5. Insert cd ../fabric-samples/test-network/ || exit (Ensure you step up one directory to reach the fabric-samples folder).
+1.6. Insert ./network.sh down to destroy broken containers and corrupted network bridges.
+1.7. Insert echo "Rebuilding Fabric network and channel...".
+1.8. Insert ./network.sh up createChannel -c bdllmchannel.
+
+Phase 2: Refactor manager.py (Synchronous Execution)
+2.1. Open manager.py. Locate the logic for Option 1.
+2.2. Keep the diagnostic docker ps subprocess call that checks for "Up" and "Exited" states.
+2.3. If the state is "Up", print [Fabric Diagnostic] Active peer containers detected. Network is live and ready. Do not execute the setup script.
+2.4. If the state is "Exited" or empty, print [Fabric Diagnostic] Network requires recovery. Executing deterministic rebuild in the foreground...
+2.5. Remove any code that runs the setup script in the background (e.g., subprocess.Popen or shell & flags).
+2.6. Replace it with a blocking execution using the correct path: subprocess.run(['bash', './blockchain/setup_fabric.sh'], check=True). This forces the orchestrator to wait and stream all Fabric output to the terminal.
+2.7. Wrap the subprocess.run in a try...except subprocess.CalledProcessError as e: block. Inside the except block, print [Error] Fabric recovery failed. Please check Docker daemon.
+
+Phase 3: Auditable Logging
+3.1. Open instructions.txt.
+3.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to fix the relative directory navigation in the setup script. You must use bash absolute path resolution to prevent execution context errors. Follow this numbered architecture exactly.
+
+Phase 1: Fix Directory Resolution in blockchain/setup_fabric.sh
+1.1. Open blockchain/setup_fabric.sh.
+1.2. Locate the line: cd ../fabric-samples/test-network/ || exit.
+1.3. Replace that specific line with the following two lines exactly:
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR/../fabric-samples/test-network/" || exit
+
+Phase 2: Apply to Deployment Script
+2.1. Open blockchain/deploy_htlc.sh.
+2.2. Apply the same robust pathing. Locate the line: cd ../../fabric-samples/test-network/ (or similar, immediately after the go mod commands).
+2.3. Replace it with the following two lines exactly:
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR/../fabric-samples/test-network/" || exit
+
+Phase 3: Auditable Logging
+3.1. Open instructions.txt.
+3.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to enforce an aggressive, completely sterile Hyperledger Fabric reset. You must update the bash script to purge detached Docker volumes and leftover cryptographic material to prevent ledger state conflicts. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul blockchain/setup_fabric.sh
+1.1. Open blockchain/setup_fabric.sh.
+1.2. Completely replace its contents with the following bash commands to ensure a sterile reset.
+1.3. Insert #!/bin/bash.
+1.4. Insert echo "Executing hard reset of Fabric environment...".
+1.5. Insert SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)".
+1.6. Insert cd "$SCRIPT_DIR/../fabric-samples/test-network/" || exit.
+1.7. Insert echo "Tearing down existing network structures...".
+1.8. Insert ./network.sh down.
+1.9. Insert echo "Purging orphaned Docker containers, networks, and ghost volumes...".
+1.10. Insert docker container prune -f.
+1.11. Insert docker network prune -f.
+1.12. Insert docker volume prune -f.
+1.13. Insert echo "Wiping leftover cryptographic artifacts...".
+1.14. Insert rm -rf organizations/peerOrganizations organizations/ordererOrganizations channel-artifacts.
+1.15. Insert echo "Rebuilding Fabric network and channel...".
+1.16. Insert ./network.sh up createChannel -c bdllmchannel.
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to enforce strict directory isolation and fix the deployment pathing. You must remove corrupted root files and rewrite the deployment script to execute relative to the project root. Follow this numbered architecture exactly.
+
+Phase 1: Eradicate Rogue Root Files
+1.1. Programmatically delete go.mod and go.sum from the root directory (BDLLM_cdx). These files must not exist outside the blockchain/chaincode directory.
+
+Phase 2: Overhaul blockchain/deploy_htlc.sh
+2.1. Open blockchain/deploy_htlc.sh.
+2.2. Completely replace its contents with the following bash script. This script expects execution from the project root via manager.py and navigates explicitly to prevent file spill.
+
+Bash
+
+#!/bin/bash
+echo "Enforcing strict directory isolation..."
+
+# 1. Purge any lingering module files from the root directory
+rm -f go.mod go.sum
+
+# 2. Navigate explicitly into the chaincode folder
+cd blockchain/chaincode || exit
+
+echo "Initializing Go dependencies for HTLC chaincode..."
+rm -f go.mod go.sum
+go mod init htlc
+go mod tidy
+
+# 3. Navigate to the Fabric test network
+cd ../../fabric-samples/test-network/ || exit
+
+echo "Deploying HTLC to Fabric channel..."
+./network.sh deployCC -ccn htlc -ccp ../../blockchain/chaincode/ -ccl go -c bdllmchannel
+
+echo "Deployment script execution finished."
+Phase 3: Auditable Logging
+3.1. Open instructions.txt.
+3.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to establish the vLLM execution environment and integrate it into the Python orchestrator. You must isolate all LLM dependencies within the designated directory. Follow this numbered architecture exactly.
+
+Phase 1: Directory Structure Modification
+1.1. Rename the existing directory llm_provider to llm_server. If llm_provider does not exist, simply create llm_server.
+
+Phase 2: vLLM Server Configuration
+2.1. Create a new file llm_server/start_vllm.sh.
+2.2. Insert #!/bin/bash at the top of the file.
+2.3. Insert the command to install dependencies: pip install vllm requests.
+2.4. Insert the command to launch the OpenAI-compatible vLLM API server:
+python3 -m vllm.entrypoints.openai.api_server --model HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 &
+2.5. Insert the command to capture the process ID: echo $! > vllm.pid.
+2.6. Insert echo "vLLM server started in background.".
+2.7. Ensure this script has executable permissions.
+
+2.8. Create a new file llm_server/stop_vllm.sh.
+2.9. Insert #!/bin/bash.
+2.10. Insert logic to kill the server reading from the PID file:
+if [ -f vllm.pid ]; then
+  kill -9 $(cat vllm.pid)
+  rm vllm.pid
+  echo "vLLM server stopped."
+else
+  echo "No PID file found. Server may not be running."
+fi
+2.11. Ensure this script has executable permissions.
+
+Phase 3: LLM Client Interface
+3.1. Create a new file llm_server/llm_client.py.
+3.2. Import the requests and json modules.
+3.3. Define a function query_smollm(prompt: str) -> str:.
+3.4. Inside the function, construct a POST request to http://localhost:8000/v1/chat/completions. Use the following payload structure:
+{ "model": "HuggingFaceTB/SmolLM2-135M-Instruct", "messages": [{"role": "user", "content": prompt}], "max_tokens": 100 }
+3.5. Execute the request. Parse the JSON response to extract the assistant's message content. Return the text. If an error occurs (e.g., ConnectionError), catch the exception, print an error stating the server is unreachable, and return an empty string.
+
+Phase 4: Refactor manager.py (Interactive Sub-Menu)
+4.1. Open manager.py. Import the subprocess module.
+4.2. Update the main menu string to include a new option exactly as formatted: 8) LLM Server Management.
+4.3. Create a new function named manage_llm_server().
+4.4. Inside manage_llm_server(), instantiate a while True: loop.
+4.5. Print the sub-menu:
+\n=== LLM Server Operations ===
+1) Start vLLM Server (SmolLM2-135M)
+2) Send Test Prompt
+3) Stop vLLM Server
+0) Return to Main Menu
+4.6. Prompt the user for input using llm_choice = input("Select an option: ").
+4.7. Implement if llm_choice == "1":. Execute the startup script synchronously: subprocess.run(['bash', './llm_server/start_vllm.sh'], cwd='llm_server', check=True). Print a message that the server is initializing and requires a few moments to load model weights.
+4.8. Implement elif llm_choice == "2":. Prompt the user for a text input: user_prompt = input("Enter prompt for SmolLM2: "). Import query_smollm from llm_server.llm_client. Call the function with user_prompt. Print the returned response.
+4.9. Implement elif llm_choice == "3":. Execute the shutdown script: subprocess.run(['bash', './llm_server/stop_vllm.sh'], cwd='llm_server', check=True).
+4.10. Implement elif llm_choice == "0":. Execute break.
+4.11. Update the main menu's while True: loop to route selection 8 to manage_llm_server().
+
+Phase 5: Auditable Logging
+5.1. Open instructions.txt.
+5.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the working directory pathing collision in the Python orchestrator. Follow this numbered architecture exactly.
+
+Phase 1: Fix Subprocess Pathing in manager.py
+1.1. Open manager.py.
+1.2. Locate the manage_llm_server() function.
+1.3. Find the execution block for Option 1 (Start vLLM Server).
+1.4. Update the subprocess.run command to remove the redundant directory reference. Change it exactly to:
+subprocess.run(['bash', './start_vllm.sh'], cwd='llm_server', check=True)
+1.5. Find the execution block for Option 3 (Stop vLLM Server).
+1.6. Update the subprocess.run command to match the corrected pathing:
+subprocess.run(['bash', './stop_vllm.sh'], cwd='llm_server', check=True)
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the PEP 668 externally-managed-environment restriction. You must implement a Python virtual environment for the server and refactor the client to use standard libraries exclusively. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh (Virtual Environment Isolation)
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script to isolate the installation context:
+
+Bash
+
+#!/bin/bash
+echo "Initializing isolated Python virtual environment..."
+# Create the virtual environment directory if it doesn't exist
+python3 -m venv vllm_env
+
+# Activate the environment
+source vllm_env/bin/activate
+
+echo "Installing vLLM (this will take a few minutes on the first run)..."
+# Install safely inside the venv
+pip install vllm
+
+echo "Starting vLLM API server..."
+python3 -m vllm.entrypoints.openai.api_server --model HuggingFaceTB/SmolLM2-135M-Instruct --port 8000 &
+echo $! > vllm.pid
+echo "vLLM server started in background. PID saved."
+
+# Deactivate to return to normal shell context
+deactivate
+
+Phase 2: Refactor llm_server/llm_client.py (Zero-Dependency Architecture)
+2.1. Open llm_server/llm_client.py.
+2.2. Completely replace its contents with the following code. Do not use the requests library. Use urllib.request to ensure the orchestrator requires no pip dependencies.
+
+Python
+
+import urllib.request
+import json
+
+def query_smollm(prompt: str) -> str:
+    url = "http://localhost:8000/v1/chat/completions"
+    headers = {"Content-Type": "application/json"}
+    payload = {
+        "model": "HuggingFaceTB/SmolLM2-135M-Instruct",
+        "messages": [{"role": "user", "content": prompt}],
+        "max_tokens": 100
+    }
+    
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+    
+    try:
+        with urllib.request.urlopen(req) as response:
+            result = json.loads(response.read().decode("utf-8"))
+            return result.get("choices", [{}])[0].get("message", {}).get("content", "")
+    except Exception as e:
+        print(f"\n[Error] Failed to connect to vLLM server: {e}")
+        print("Ensure the server has finished loading model weights before testing.")
+        return ""
+
+Phase 3: Auditable Logging
+3.1. Open instructions.txt.
+3.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the vLLM hardware architecture mismatch and VRAM constraints. You must update the bash script to utilize the V0 engine, the xformers backend, and eager execution. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script to enforce the correct hardware fallbacks:
+
+Bash
+
+#!/bin/bash
+echo "Initializing isolated Python virtual environment..."
+python3 -m venv vllm_env
+source vllm_env/bin/activate
+
+echo "Installing vLLM and xformers fallback backend..."
+pip install vllm xformers
+
+echo "Configuring environment for Turing GPU compatibility (NVIDIA T1000)..."
+export VLLM_USE_V1=0
+export VLLM_ATTENTION_BACKEND=XFORMERS
+
+echo "Starting vLLM API server..."
+python3 -m vllm.entrypoints.openai.api_server \
+    --model HuggingFaceTB/SmolLM2-135M-Instruct \
+    --port 8000 \
+    --enforce-eager \
+    --max-model-len 2048 &
+
+echo $! > vllm.pid
+echo "vLLM server started in background. PID saved."
+deactivate
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the vLLM engine compilation failure. You must wipe the corrupted virtual environment and rebuild it using pinned, pre-compiled legacy dependencies. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh (Dependency Pinning)
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script to enforce the stable 0.6.2 architecture:
+
+Bash
+
+#!/bin/bash
+echo "Purging corrupted virtual environment..."
+rm -rf vllm_env
+
+echo "Rebuilding isolated Python virtual environment..."
+python3 -m venv vllm_env
+source vllm_env/bin/activate
+
+echo "Installing stable vLLM 0.6.2 and compatible xformers..."
+# Pinning to 0.6.2 guarantees pre-compiled Turing support without nvcc
+pip install vllm==0.6.2 xformers==0.0.28.post2
+
+echo "Starting vLLM API server..."
+python3 -m vllm.entrypoints.openai.api_server \
+    --model HuggingFaceTB/SmolLM2-135M-Instruct \
+    --port 8000 \
+    --enforce-eager \
+    --max-model-len 2048 &
+
+echo $! > vllm.pid
+echo "vLLM server started in background. PID saved."
+deactivate
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the pip dependency conflict. You must update the package versions to align perfectly with the vLLM 0.6.2 requirements. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh (Dependency Alignment)
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script to enforce exact dependency matching:
+
+Bash
+
+#!/bin/bash
+echo "Purging corrupted virtual environment..."
+rm -rf vllm_env
+
+echo "Rebuilding isolated Python virtual environment..."
+python3 -m venv vllm_env
+source vllm_env/bin/activate
+
+echo "Installing stable vLLM 0.6.2 and strictly matched xformers..."
+# Match the exact dependency requirement for Linux x86_64
+pip install vllm==0.6.2 xformers==0.0.27.post2
+
+echo "Starting vLLM API server..."
+python3 -m vllm.entrypoints.openai.api_server \
+    --model HuggingFaceTB/SmolLM2-135M-Instruct \
+    --port 8000 \
+    --enforce-eager \
+    --max-model-len 2048 &
+
+echo $! > vllm.pid
+echo "vLLM server started in background. PID saved."
+deactivate
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: google.geminicodeassist.Gemini Code Assist Debug.log
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the RoPE scaling assertion error and optimize the startup sequence. You must swap the target model to SmolLM version 1 and update the client payload. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh (Model Swap & Caching)
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script. This script checks for the existing environment to save bandwidth and utilizes the stable V1 model.
+
+Bash
+
+#!/bin/bash
+if [ ! -d "vllm_env" ]; then
+    echo "Building isolated Python virtual environment..."
+    python3 -m venv vllm_env
+    source vllm_env/bin/activate
+    echo "Installing stable vLLM 0.6.2 and strictly matched xformers..."
+    pip install vllm==0.6.2 xformers==0.0.27.post2
+else
+    echo "Existing virtual environment detected. Activating..."
+    source vllm_env/bin/activate
+fi
+
+echo "Starting vLLM API server with SmolLM V1..."
+python3 -m vllm.entrypoints.openai.api_server \
+    --model HuggingFaceTB/SmolLM-135M-Instruct \
+    --port 8000 \
+    --enforce-eager \
+    --max-model-len 2048 &
+
+echo $! > vllm.pid
+echo "vLLM server started in background. PID saved."
+deactivate
+
+Phase 2: Refactor llm_server/llm_client.py (Payload Update)
+2.1. Open llm_server/llm_client.py.
+2.2. Locate the payload dictionary inside the query_smollm function.
+2.3. Change the "model" value from "HuggingFaceTB/SmolLM2-135M-Instruct" to strictly "HuggingFaceTB/SmolLM-135M-Instruct".
+
+Phase 3: Auditable Logging
+3.1. Open instructions.txt.
+3.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the RoPE scaling assertion error. You must replace the incompatible SmolLM model with the stable TinyLlama architecture across the server script, client payload, and orchestrator menu. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh (Stable Architecture Swap)
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script to utilize TinyLlama:
+
+Bash
+
+#!/bin/bash
+if [ ! -d "vllm_env" ]; then
+    echo "Building isolated Python virtual environment..."
+    python3 -m venv vllm_env
+    source vllm_env/bin/activate
+    echo "Installing stable vLLM 0.6.2 and strictly matched xformers..."
+    pip install vllm==0.6.2 xformers==0.0.27.post2
+else
+    echo "Existing virtual environment detected. Activating..."
+    source vllm_env/bin/activate
+fi
+
+echo "Starting vLLM API server with TinyLlama-1.1B..."
+python3 -m vllm.entrypoints.openai.api_server \
+    --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 \
+    --port 8000 \
+    --enforce-eager \
+    --max-model-len 2048 &
+
+echo $! > vllm.pid
+echo "vLLM server started in background. PID saved."
+deactivate
+
+Phase 2: Refactor llm_server/llm_client.py (Payload Update)
+2.1. Open llm_server/llm_client.py.
+2.2. Locate the payload dictionary inside the query_smollm function.
+2.3. Rename the function to query_llm(prompt: str) -> str:.
+2.4. Change the "model" value strictly to "TinyLlama/TinyLlama-1.1B-Chat-v1.0".
+
+Phase 3: Refactor manager.py (Menu Synchronization)
+3.1. Open manager.py.
+3.2. Locate the manage_llm_server() function.
+3.3. Update the printed sub-menu string to reflect the new model: Replace 1) Start vLLM Server (SmolLM2-135M) with 1) Start vLLM Server (TinyLlama-1.1B).
+3.4. Inside the elif llm_choice == "2": block, update the import statement from from llm_server.llm_client import query_smollm to from llm_server.llm_client import query_llm.
+3.5. Update the function call from query_smollm(user_prompt) to query_llm(user_prompt).
+
+Phase 4: Auditable Logging
+4.1. Open instructions.txt.
+4.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the RoPE scaling assertion error. You must replace the incompatible SmolLM model with the stable TinyLlama architecture across the server script, client payload, and orchestrator menu. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh (Stable Architecture Swap)
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script to utilize TinyLlama:
+
+Bash
+
+#!/bin/bash
+if [ ! -d "vllm_env" ]; then
+    echo "Building isolated Python virtual environment..."
+    python3 -m venv vllm_env
+    source vllm_env/bin/activate
+    echo "Installing stable vLLM 0.6.2 and strictly matched xformers..."
+    pip install vllm==0.6.2 xformers==0.0.27.post2
+else
+    echo "Existing virtual environment detected. Activating..."
+    source vllm_env/bin/activate
+fi
+
+echo "Starting vLLM API server with TinyLlama-1.1B..."
+python3 -m vllm.entrypoints.openai.api_server \
+    --model TinyLlama/TinyLlama-1.1B-Chat-v1.0 \
+    --port 8000 \
+    --enforce-eager \
+    --max-model-len 2048 &
+
+echo $! > vllm.pid
+echo "vLLM server started in background. PID saved."
+deactivate
+
+Phase 2: Refactor llm_server/llm_client.py (Payload Update)
+2.1. Open llm_server/llm_client.py.
+2.2. Locate the payload dictionary inside the query_smollm function.
+2.3. Rename the function to query_llm(prompt: str) -> str:.
+2.4. Change the "model" value strictly to "TinyLlama/TinyLlama-1.1B-Chat-v1.0".
+
+Phase 3: Refactor manager.py (Menu Synchronization)
+3.1. Open manager.py.
+3.2. Locate the manage_llm_server() function.
+3.3. Update the printed sub-menu string to reflect the new model: Replace 1) Start vLLM Server (SmolLM2-135M) with 1) Start vLLM Server (TinyLlama-1.1B).
+3.4. Inside the elif llm_choice == "2": block, update the import statement from from llm_server.llm_client import query_smollm to from llm_server.llm_client import query_llm.
+3.5. Update the function call from query_smollm(user_prompt) to query_llm(user_prompt).
+
+Phase 4: Auditable Logging
+4.1. Open instructions.txt.
+4.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to adopt the PlanetServe overlay architecture for the LLM node. We will replace the default vLLM OpenAI wrapper with a custom FastAPI engine wrapper. This provides the granular control needed to integrate HTLC payment verifications directly into the inference pipeline. Follow this numbered architecture exactly.
+
+Phase 1: PlanetServe-Style Custom Engine (llm_server/engine_server.py)
+1.1. Create a new file llm_server/engine_server.py.
+1.2. Insert the following Python code to build a custom AsyncLLMEngine API. This bypasses OpenAI-wrapper bloat and prevents the config parsing assertions.
+
+Python
+
+import uuid
+import uvicorn
+from fastapi import FastAPI, Request
+from vllm.engine.arg_utils import AsyncEngineArgs
+from vllm.engine.async_llm_engine import AsyncLLMEngine
+from vllm.sampling_params import SamplingParams
+
+app = FastAPI(title="BDLLM Custom Inference Node")
+
+# Enforce TinyLlama to prevent RoPE scaling assertion errors on Turing GPUs
+engine_args = AsyncEngineArgs(
+    model="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
+    enforce_eager=True,
+    max_model_len=2048,
+    gpu_memory_utilization=0.9
+)
+engine = AsyncLLMEngine.from_engine_args(engine_args)
+
+@app.post("/generate")
+async def generate(request: Request):
+    data = await request.json()
+    prompt = data.get("prompt", "")
+    
+    # TODO: Future PlanetServe/BDLLM Integration
+    # Intercept request here to verify HTLC Smart Contract before spending GPU cycles.
+    
+    sampling_params = SamplingParams(max_tokens=150, temperature=0.7)
+    request_id = str(uuid.uuid4())
+    
+    results_generator = engine.generate(prompt, sampling_params, request_id)
+    final_output = None
+    async for request_output in results_generator:
+        final_output = request_output
+        
+    return {"response": final_output.outputs[0].text}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+Phase 2: Overhaul llm_server/start_vllm.sh
+2.1. Open llm_server/start_vllm.sh.
+2.2. Completely replace its contents with the following bash script to launch our custom overlay node:
+
+Bash
+
+#!/bin/bash
+if [ ! -d "vllm_env" ]; then
+    echo "Building isolated Python virtual environment..."
+    python3 -m venv vllm_env
+    source vllm_env/bin/activate
+    pip install vllm==0.6.2 xformers==0.0.27.post2 fastapi uvicorn
+else
+    echo "Existing virtual environment detected. Activating..."
+    source vllm_env/bin/activate
+fi
+
+echo "Starting PlanetServe-style custom LLM engine..."
+python3 engine_server.py &
+echo $! > vllm.pid
+echo "Custom API node started in background. PID saved."
+deactivate
+
+Phase 3: Refactor llm_server/llm_client.py (Custom Payload)
+3.1. Open llm_server/llm_client.py.
+3.2. Completely replace its contents to match the new custom endpoint:
+
+Python
+
+import urllib.request
+import json
+
+def query_llm(prompt: str) -> str:
+    url = "http://localhost:8000/generate"
+    headers = {"Content-Type": "application/json"}
+    payload = {"prompt": prompt}
+    
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
+    
+    try:
+        with urllib.request.urlopen(req) as response:
+            result = json.loads(response.read().decode("utf-8"))
+            return result.get("response", "").strip()
+    except Exception as e:
+        print(f"\n[Error] Failed to connect to Custom LLM Node: {e}")
+        return ""
+
+Phase 4: Refactor manager.py (Menu Synchronization)
+4.1. Open manager.py.
+4.2. Locate the manage_llm_server() function.
+4.3. Update the printed sub-menu string: Replace 1) Start vLLM Server (SmolLM2-135M) with 1) Start Custom LLM Node (PlanetServe Architecture).
+4.4. Inside the elif llm_choice == "2": block, ensure the orchestrator imports query_llm and calls it correctly with the user prompt.
+
+Phase 5: Auditable Logging
+5.1. Open instructions.txt.
+5.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to build the PlanetServe-style LLM node and bypass the RoPE scaling assertion error. You must replace the incompatible Llama models with the OPT architecture. Follow this numbered architecture exactly.
+
+Phase 1: PlanetServe-Style Engine (llm_server/engine_server.py)
+1.1. Open llm_server/engine_server.py.
+1.2. Completely replace its contents with the following Python code. This implements the raw AsyncLLMEngine wrapper using the facebook/opt-125m model to guarantee hardware compatibility.
+
+Python
+
+import uuid
+import uvicorn
+from fastapi import FastAPI, Request
+from vllm.engine.arg_utils import AsyncEngineArgs
+from vllm.engine.async_llm_engine import AsyncLLMEngine
+from vllm.sampling_params import SamplingParams
+
+app = FastAPI(title="BDLLM PlanetServe Node")
+
+# OPT-125m completely bypasses Llama RoPE scaling configurations
+engine_args = AsyncEngineArgs(
+    model="facebook/opt-125m",
+    enforce_eager=True,
+    gpu_memory_utilization=0.9
+)
+engine = AsyncLLMEngine.from_engine_args(engine_args)
+
+@app.post("/generate")
+async def generate(request: Request):
+    data = await request.json()
+    prompt = data.get("prompt", "Hello")
+    
+    sampling_params = SamplingParams(max_tokens=100, temperature=0.7)
+    request_id = str(uuid.uuid4())
+    
+    results_generator = engine.generate(prompt, sampling_params, request_id)
+    final_output = None
+    async for request_output in results_generator:
+        final_output = request_output
+        
+    return {"response": final_output.outputs[0].text}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+Phase 2: Update llm_server/start_vllm.sh
+2.1. Open llm_server/start_vllm.sh.
+2.2. Completely replace its contents with the following bash script:
+
+Bash
+
+#!/bin/bash
+if [ ! -d "vllm_env" ]; then
+    echo "Building isolated Python virtual environment..."
+    python3 -m venv vllm_env
+    source vllm_env/bin/activate
+    pip install vllm==0.6.2 xformers==0.0.27.post2 fastapi uvicorn
+else
+    echo "Existing virtual environment detected. Activating..."
+    source vllm_env/bin/activate
+fi
+
+echo "Starting PlanetServe-style LLM engine with OPT-125M..."
+python3 engine_server.py &
+echo $! > vllm.pid
+echo "Custom API node started in background. PID saved."
+deactivate
+
+Phase 3: Refactor manager.py (Menu Synchronization)
+3.1. Open manager.py.
+3.2. Locate the manage_llm_server() function.
+3.3. Update the printed sub-menu string to reflect the new architecture: Replace the start option text with 1) Start Custom LLM Node (OPT-125M).
+
+Phase 4: Auditable Logging
+4.1. Open instructions.txt.
+4.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the tokenizer initialization crash. You must pin the transformers library to version 4.44.2 to restore backward compatibility with vLLM 0.6.2. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh (Total Ecosystem Pinning)
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script to strictly enforce the entire dependency tree:
+
+Bash
+
+#!/bin/bash
+echo "Verifying virtual environment..."
+if [ ! -d "vllm_env" ]; then
+    echo "Building isolated Python virtual environment..."
+    python3 -m venv vllm_env
+fi
+
+source vllm_env/bin/activate
+
+echo "Enforcing strict dependency pinning for transformers..."
+# Pinning transformers to 4.44.2 prevents the 'all_special_tokens_extended' AttributeError
+pip install transformers==4.44.2 vllm==0.6.2 xformers==0.0.27.post2 fastapi uvicorn
+
+echo "Starting PlanetServe-style LLM engine with OPT-125M..."
+python3 engine_server.py &
+echo $! > vllm.pid
+echo "Custom API node started in background. PID saved."
+deactivate
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
+## April 9, 2026
+
+<environment_context>
+  <cwd>/home/danish/Downloads/BDLLM_cdx</cwd>
+  <shell>bash</shell>
+  <current_date>2026-04-09</current_date>
+  <timezone>America/Los_Angeles</timezone>
+</environment_context>
+# Context from my IDE setup:
+
+## Active file: manager.py
+
+## Open tabs:
+- manager.py: manager.py
+
+## My request for Codex:
+Execute the following implementation to resolve the dependency deadlock and the tokenizer Attribute Error. You must purge the environment and pin transformers to 4.45.2. Follow this numbered architecture exactly.
+
+Phase 1: Overhaul llm_server/start_vllm.sh (Precise Dependency Pinning)
+1.1. Open llm_server/start_vllm.sh.
+1.2. Completely replace its contents with the following bash script to enforce the exact working dependency tree:
+
+Bash
+
+#!/bin/bash
+echo "Purging corrupted virtual environment..."
+rm -rf vllm_env
+
+echo "Building isolated Python virtual environment..."
+python3 -m venv vllm_env
+source vllm_env/bin/activate
+
+echo "Enforcing strict dependency pinning..."
+# 4.45.2 satisfies vLLM 0.6.2 requirements while retaining the deprecated tokenizer attributes
+pip install transformers==4.45.2 vllm==0.6.2 xformers==0.0.27.post2 fastapi uvicorn
+
+echo "Starting PlanetServe-style LLM engine with OPT-125M..."
+python3 engine_server.py &
+echo $! > vllm.pid
+echo "Custom API node started in background. PID saved."
+deactivate
+
+Phase 2: Auditable Logging
+2.1. Open instructions.txt.
+2.2. Append this exact multi-phase prompt string to the end of the file with today's date.
